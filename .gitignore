@@ -85,3 +85,5 @@ gen_shader_bin
 shaders.h
 
 .*
+
+!.github
