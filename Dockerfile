@@ -11,4 +11,7 @@ RUN apt-get update && \
     mk-build-deps --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control && \
     dpkg-buildpackage -b -uc -us && \
     mkdir -p /work/out && \
-    cp ../*.deb /work/out
+    cp ../*.deb /work/out && \
+    chmod +x copy-executable.docker.sh
+
+ENTRYPOINT ["/work/src/copy-executable.docker.sh"]

@@ -31,8 +31,8 @@ jobs:
             --output "type=image,push=false" \
             -t opentegra:builder .
       -
-        name: Get output directory from image
-        run: mkdir output && docker run -it --rm -v $(pwd)/output:/output opentegra:builder cp -R /work/out/* /output 
+        name: Get output deb
+        run: mkdir output && docker run --rm -v ${GITHUB_WORKSPACE}/output:/output opentegra:builder && ls output
       -
         name: Upload .deb packages
         uses: actions/upload-artifact@v3
