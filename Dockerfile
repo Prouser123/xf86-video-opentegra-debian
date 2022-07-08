@@ -1,6 +1,6 @@
 from debian
 
-WORKDIR /src
+WORKDIR /work/src
 
 COPY . .
 
@@ -9,4 +9,6 @@ COPY . .
 RUN apt-get update && \
     apt-get install devscripts -y && \
     mk-build-deps --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control && \
-    dpkg-buildpackage -b -uc -us
+    dpkg-buildpackage -b -uc -us -j $(nproc) && \
+    mkdir -p /work/out && \
+    cp ../*.deb /work/out

@@ -30,3 +30,11 @@ jobs:
             --platform linux/arm/v7 \
             --output "type=image,push=false" \
             -t opentegra:builder .
+      -
+        name: Get output directory from image
+        run: mkdir output && docker run -it --rm -v $(pwd)/output:/output opentegra:builder cp -R /work/out/* /output 
+      -
+        name: Upload .deb packages
+        uses: actions/upload-artifact@v3
+        with:
+          path: output/*.deb 
