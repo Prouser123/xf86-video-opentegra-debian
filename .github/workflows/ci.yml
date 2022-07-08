@@ -3,7 +3,7 @@ name: builder
 on: [push, workflow_dispatch]
 
 jobs:
-  papermc-alpine:
+  deb:
     runs-on: ubuntu-latest
     steps:
       -
@@ -28,5 +28,5 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm/v7 \
-            --output "type=image,push=false \
+            --output "type=image,push=false" \
             -t opentegra:builder .
