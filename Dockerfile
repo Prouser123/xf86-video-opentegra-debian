@@ -4,6 +4,9 @@ WORKDIR /src
 
 COPY . .
 
-RUN sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list && \
-    apt build-dep xserver-xorg-video-opentegra -y && \
-    dpkg-build-package -b -uc -us
+# mk-build-deps --install | https://stackoverflow.com/a/19432425 (comments)
+
+RUN apt-get update && \
+    apt-get install devscripts -y && \
+    mk-build-deps --install --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control && \
+    dpkg-buildpackage -b -uc -us
