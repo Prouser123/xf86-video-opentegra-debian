@@ -28,7 +28,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/arm/v7 \
-            --output "type=image,push=false" \
+            --load \
             -t opentegra:builder .
       -
         name: Get output deb
