@@ -1,0 +1,41 @@
+name: build
+
+on:
+  push:
+    branches: [ "debian" ]
+
+jobs:
+  deb-armhf:
+
+    runs-on: ubuntu-latest
+    container:
+      image: debian:latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        path: src
+    - name: Add foreign (armhf) architecture
+      run: dpkg --add-architecture armhf
+    - name: Update package lists
+      run: apt update
+    - name: Install development dependencies
+      run: apt install build-essential devscripts equivs crossbuild-essential-armhf --yes --no-install-recommends
+    - name: Get and install build package dependencies
+      run: cd src && mk-build-deps --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control -i --host-arch armhf
+    - name: Rename source file to negate need for source tgz
+      run: cd src && mv debian/source/format debian/source/format.1
+    - name: Build debian package
+      run: cd src && CONFIG_SITE=/etc/dpkg-cross/cross-config.amd64 DEB_BUILD_OPTIONS=nocheck dpkg-buildpackage -aarmhf -Pcross,nocheck
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        path: xserver*.*
+    - name: Upload .deb to github releases
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: dev
+        files: ./*.deb
+      
+      
